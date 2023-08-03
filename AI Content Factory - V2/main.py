@@ -1,9 +1,26 @@
 import pandas as pd
 import openai
 import streamlit as st
+from openai_key import openai_api
+from prompt_library import prompt_templates
 
 # Set your OpenAI API key here
 openai.api_key = openai_api
+
+st.set_page_config(
+    page_title="AI Content Generator", # Set page title
+    layout="wide", # Use the wide layout
+)
+
+# Create a title for your app
+st.title('AI Content Generator')
+
+# Create a description for your app
+st.markdown('''
+This application generates content using the OpenAI GPT-3 model. 
+Upload a CSV file with prompts, select a prompt template, and let the model generate the content. 
+You can then download the generated articles as a CSV file.
+''')
 
 def load_data(file_path):
     """
@@ -87,6 +104,7 @@ def main():
     # User will upload the data file
     data_file = st.file_uploader("Upload your data file", type=['csv'])
     if data_file is not None:
+        st.success("File uploaded successfully!")
         df = load_data(data_file)
         articles = parse_data(df)
 
@@ -100,12 +118,13 @@ def main():
         generated_contents = []
         for keyword, article in articles.items():
             # Generate content for the selected article
-            generated_content = generate_content(keyword, article, system_prompt, user_prompt)
+            generated_content = generate_content(article, system_prompt, user_prompt)
             generated_contents.append(generated_content)
 
         # Provide an option to save all generated articles
         if st.button('Save Generated Articles'):
             save_articles(generated_contents)
+            st.success("Articles saved successfully!")
 
 if __name__ == "__main__":
     main()
