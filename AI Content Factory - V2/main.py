@@ -33,7 +33,7 @@ def parse_data(df):
     except Exception as e:
         st.write(f"Error occurred while parsing data: {e}")
 
-def generate_content(article, system_prompt, user_prompt):
+def generate_content(keyword, article, system_prompt, user_prompt):
     """
     Generate long-form content for an article.
     """
@@ -100,19 +100,8 @@ def main():
         generated_contents = []
         for keyword, article in articles.items():
             # Generate content for the selected article
-            generated_content = generate_content(article, system_prompt, user_prompt)
+            generated_content = generate_content(keyword, article, system_prompt, user_prompt)
             generated_contents.append(generated_content)
-
-        # Allow the user to select a generated article to view
-        selected_keyword = st.sidebar.selectbox('Select an article to view', [content['keyword'] for content in generated_contents])
-
-        # Find the selected generated article
-        selected_generated_content = next((content for content in generated_contents if content['keyword'] == selected_keyword), None)
-
-        if selected_generated_content:
-            # Construct and display the HTML
-            html_article = construct_html(selected_generated_content)
-            st.markdown(html_article, unsafe_allow_html=True)
 
         # Provide an option to save all generated articles
         if st.button('Save Generated Articles'):
